@@ -1,20 +1,21 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import {
   ApolloClient,
-  InMemoryCache,
   ApolloProvider,
   createHttpLink,
+  InMemoryCache,
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import Home from './pages/Home';
-import Detail from './pages/Detail';
-import NoMatch from './pages/NoMatch';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
 import Nav from './components/Nav';
+import Detail from './pages/Detail';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import NoMatch from './pages/NoMatch';
 import OrderHistory from './pages/OrderHistory';
+import Signup from './pages/Signup';
+import { StoreProvider } from './utils/GlobalState';
 
 const httpLink = createHttpLink({
   uri: '/graphql',
@@ -40,15 +41,17 @@ function App() {
     <ApolloProvider client={client}>
       <Router>
         <div>
-          <Nav />
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/signup" component={Signup} />
-            <Route exact path="/orderHistory" component={OrderHistory} />
-            <Route exact path="/products/:id" component={Detail} />
-            <Route component={NoMatch} />
-          </Switch>
+          <StoreProvider>
+            <Nav />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/orderHistory" element={<OrderHistory />} />
+              <Route path="/products/:id" element={<Detail />} />
+              <Route path="*" element={<NoMatch />} />
+            </Routes>
+          </StoreProvider>
         </div>
       </Router>
     </ApolloProvider>
